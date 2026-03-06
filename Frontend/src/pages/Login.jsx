@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,7 +15,10 @@ function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
         },
       );
 
@@ -25,38 +26,51 @@ function Login() {
 
       if (response.ok) {
         alert("Login Successful");
-        navigate("/dashboard");
+
+        // redirect to dashboard
+        window.location.href = "/dashboard";
       } else {
-        alert(data.error);
+        alert(data.error || "Invalid Username or Password");
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("Server Error");
+      alert("Server error. Please try again.");
+      console.error(error);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-[#f9f5e7]">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow w-80">
-        <h2 className="text-xl font-bold mb-4 text-center">Staff Login</h2>
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-lg shadow-lg w-80"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">Staff Login</h2>
 
+        {/* Username */}
         <input
           type="text"
           placeholder="Username"
-          className="w-full border p-2 mb-3"
+          className="w-full border p-2 mb-4 rounded"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
 
+        {/* Password */}
         <input
           type="password"
           placeholder="Password"
-          className="w-full border p-2 mb-4"
+          className="w-full border p-2 mb-5 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
-        <button className="bg-emerald-600 text-white w-full py-2 rounded">
+        {/* Login Button */}
+        <button
+          type="submit"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white w-full py-2 rounded transition"
+        >
           Login
         </button>
       </form>

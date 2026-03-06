@@ -1,18 +1,17 @@
 from pathlib import Path
 
-# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key secret in production!
-SECRET_KEY = 'django-insecure-change-this-later'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = "django-insecure-dev-key"
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 # ==============================
-# Installed Applications
+# INSTALLED APPS
 # ==============================
 
 INSTALLED_APPS = [
@@ -23,38 +22,40 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Third-party
-    'rest_framework',
+    # third party
     'corsheaders',
 
-    # Local apps
+    # local apps
     'accounts',
     'analytics',
 ]
 
+
 # ==============================
-# Middleware
+# MIDDLEWARE
 # ==============================
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # MUST be at top
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Allow frontend (React) to access backend
-CORS_ALLOW_ALL_ORIGINS = True
-
-# ==============================
-# URL Configuration
-# ==============================
 
 ROOT_URLCONF = 'hardware_backend.urls'
+
+
+# ==============================
+# TEMPLATES
+# ==============================
 
 TEMPLATES = [
     {
@@ -72,10 +73,12 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'hardware_backend.wsgi.application'
 
+
 # ==============================
-# Database (SQLite for FYP)
+# DATABASE
 # ==============================
 
 DATABASES = {
@@ -85,8 +88,9 @@ DATABASES = {
     }
 }
 
+
 # ==============================
-# Password Validation
+# PASSWORD VALIDATION
 # ==============================
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -104,8 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # ==============================
-# Internationalization
+# INTERNATIONALIZATION
 # ==============================
 
 LANGUAGE_CODE = 'en-us'
@@ -116,10 +121,27 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # ==============================
-# Static Files
+# STATIC FILES
 # ==============================
 
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ==============================
+# CORS (REACT CONNECTION)
+# ==============================
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+# ==============================
+# CSRF TRUSTED ORIGINS
+# ==============================
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
