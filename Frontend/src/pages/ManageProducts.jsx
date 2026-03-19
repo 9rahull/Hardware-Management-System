@@ -1,103 +1,32 @@
 import { useEffect, useState } from "react";
 
 function ManageProducts() {
-
   const [products, setProducts] = useState([]);
-  const [editingProduct, setEditingProduct] = useState(null);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    price: "",
-    stock: "",
-  });
-
-
-  // FETCH PRODUCTS
-  const fetchProducts = () => {
-    fetch("http://127.0.0.1:8000/api/products/")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
-  };
 
   useEffect(() => {
-    fetchProducts();
+    fetch("http://127.0.0.1:8000/api/products/")
+      .then(res => res.json())
+      .then(data => {
+        console.log(data); // 🔍 check image path
+        setProducts(data);
+      });
   }, []);
 
-
-  // DELETE PRODUCT
-  const deleteProduct = (id) => {
-
-    fetch(`http://127.0.0.1:8000/api/delete-product/${id}/`, {
+  const handleDelete = (id) => {
+    fetch(`http://127.0.0.1:8000/api/products/delete/${id}/`, {
       method: "DELETE",
-    })
-      .then(() => fetchProducts());
-  };
-
-
-  // START EDIT
-  const startEdit = (product) => {
-
-    setEditingProduct(product.id);
-
-    setFormData({
-      name: product.name,
-      category: product.category,
-      price: product.price,
-      stock: product.stock,
+    }).then(() => {
+      setProducts(products.filter(p => p.id !== id));
     });
   };
-
-
-  // HANDLE INPUT CHANGE
-  const handleChange = (e) => {
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-
-  // UPDATE PRODUCT
-  const updateProduct = (id) => {
-
-    fetch(`http://127.0.0.1:8000/api/update-product/${id}/`, {
-
-      method: "PUT",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(formData),
-
-    })
-      .then(() => {
-        setEditingProduct(null);
-        fetchProducts();
-      });
-  };
-
 
   return (
+    <div style={{ padding: "20px" }}>
+      <h2>Manage Products</h2>
 
-    <div style={{ padding: "40px" }}>
-
-      <h1>Manage Products</h1>
-
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-          textAlign: "center",
-        }}
-      >
-
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
-
-          <tr style={{ borderBottom: "2px solid #ccc" }}>
+          <tr>
             <th>Image</th>
             <th>Name</th>
             <th>Category</th>
@@ -106,176 +35,55 @@ function ManageProducts() {
             <th>Edit</th>
             <th>Delete</th>
           </tr>
-
         </thead>
 
         <tbody>
-
-          {products.map((product) => (
-
-            <tr key={product.id} style={{ borderBottom: "1px solid #ddd" }}>
-
+          {products.map((p) => (
+            <tr key={p.id} style={{ textAlign: "center" }}>
+              
+              {/* 🔥 IMAGE FIX HERE */}
               <td>
-
-                {product.image && (
-
+                {p.image ? (
                   <img
-                    src={`http://127.0.0.1:8000${product.image}`}
-                    alt={product.name}
+                    src={`http://127.0.0.1:8000${p.image}`}
+                    alt={p.name}
                     style={{
                       width: "60px",
                       height: "60px",
-                      objectFit: "contain",
+                      objectFit: "cover"
                     }}
                   />
-
-                )}
-
-              </td>
-
-
-              <td>
-
-                {editingProduct === product.id ? (
-
-                  <input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-
                 ) : (
-
-                  product.name
-
+                  "No Image"
                 )}
-
               </td>
 
+              <td>{p.name}</td>
+              <td>{p.category}</td>
+              <td>Rs {p.price}</td>
+              <td>{p.stock}</td>
 
               <td>
-
-                {editingProduct === product.id ? (
-
-                  <input
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                  />
-
-                ) : (
-
-                  product.category
-
-                )}
-
+                <button style={{ background: "blue", color: "white" }}>
+                  Edit
+                </button>
               </td>
 
-
               <td>
-
-                {editingProduct === product.id ? (
-
-                  <input
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                  />
-
-                ) : (
-
-                  `Rs ${product.price}`
-
-                )}
-
-              </td>
-
-
-              <td>
-
-                {editingProduct === product.id ? (
-
-                  <input
-                    name="stock"
-                    value={formData.stock}
-                    onChange={handleChange}
-                  />
-
-                ) : (
-
-                  product.stock
-
-                )}
-
-              </td>
-
-
-              <td>
-
-                {editingProduct === product.id ? (
-
-                  <button
-                    onClick={() => updateProduct(product.id)}
-                    style={{
-                      background: "green",
-                      color: "white",
-                      padding: "6px 12px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Save
-                  </button>
-
-                ) : (
-
-                  <button
-                    onClick={() => startEdit(product)}
-                    style={{
-                      background: "blue",
-                      color: "white",
-                      padding: "6px 12px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Edit
-                  </button>
-
-                )}
-
-              </td>
-
-
-              <td>
-
                 <button
-                  onClick={() => deleteProduct(product.id)}
-                  style={{
-                    background: "red",
-                    color: "white",
-                    padding: "6px 12px",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
+                  onClick={() => handleDelete(p.id)}
+                  style={{ background: "red", color: "white" }}
                 >
                   Delete
                 </button>
-
               </td>
 
             </tr>
-
           ))}
-
         </tbody>
-
       </table>
-
     </div>
-
   );
-
 }
 
 export default ManageProducts;

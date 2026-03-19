@@ -1,21 +1,15 @@
-from pathlib import Path
 import os
 from pathlib import Path
 
+# BASE DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-SECRET_KEY = "django-insecure-dev-key"
-
+# SECURITY
+SECRET_KEY = 'your-secret-key'
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
-
-# ==============================
-# INSTALLED APPS
-# ==============================
-
+# APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,45 +18,34 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # third party
-    'corsheaders',
+    'rest_framework',
 
-    # local apps
-    'accounts',
+    'corsheaders',  # ✅ ADD THIS
+
     'analytics',
+    'accounts',
 ]
 
-
-# ==============================
 # MIDDLEWARE
-# ==============================
-
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # ✅ MUST BE FIRST
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
+# URL CONFIG
 ROOT_URLCONF = 'hardware_backend.urls'
 
-
-# ==============================
 # TEMPLATES
-# ==============================
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,14 +58,10 @@ TEMPLATES = [
     },
 ]
 
-
+# WSGI
 WSGI_APPLICATION = 'hardware_backend.wsgi.application'
 
-
-# ==============================
 # DATABASE
-# ==============================
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -90,66 +69,12 @@ DATABASES = {
     }
 }
 
+# STATIC
+STATIC_URL = '/static/'
 
-# ==============================
-# PASSWORD VALIDATION
-# ==============================
+# MEDIA (IMAGES)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# ==============================
-# INTERNATIONALIZATION
-# ==============================
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# ==============================
-# STATIC FILES
-# ==============================
-
-STATIC_URL = 'static/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# ==============================
-# CORS (REACT CONNECTION)
-# ==============================
-
+# ✅ CORS FIX (VERY IMPORTANT)
 CORS_ALLOW_ALL_ORIGINS = True
-
-
-# ==============================
-# CSRF TRUSTED ORIGINS
-# ==============================
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-]
-# Media files (for uploaded product images)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
