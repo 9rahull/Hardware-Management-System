@@ -9,13 +9,13 @@ def login_view(request):
 
     user = authenticate(username=username, password=password)
 
-    if user is not None:
+    if user:
         return Response({
             "success": True,
-            "message": "Login successful"
+            "username": user.username
         })
     else:
         return Response({
             "success": False,
-            "message": "Invalid credentials"
+            "message": "Invalid username or password"
         })
