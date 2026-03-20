@@ -29,6 +29,7 @@ function Dashboard() {
           localStorage.removeItem("isLoggedIn");
           localStorage.removeItem("username");
           window.location.href = "/login";
+    
         }}
         style={{
           background: "red",
@@ -37,6 +38,7 @@ function Dashboard() {
           border: "none",
           borderRadius: "5px",
           marginBottom: "20px",
+          cursor: "pointer",
         }}
       >
         Logout

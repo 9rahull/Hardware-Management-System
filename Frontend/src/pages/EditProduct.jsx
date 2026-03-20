@@ -10,9 +10,12 @@ function EditProduct() {
     category: "",
     price: "",
     stock: "",
+    image: "",
   });
 
-  // ✅ LOAD SINGLE PRODUCT
+  const [newImage, setNewImage] = useState(null);
+
+  // FETCH PRODUCT
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/products/")
       .then(res => res.json())
@@ -22,74 +25,120 @@ function EditProduct() {
       });
   }, [id]);
 
-  // ✅ UPDATE
+  // UPDATE
   const handleUpdate = () => {
+    const formData = new FormData();
+
+    formData.append("name", product.name);
+    formData.append("category", product.category);
+    formData.append("price", product.price);
+    formData.append("stock", product.stock);
+
+    if (newImage) {
+      formData.append("image", newImage);
+    }
+
     fetch(`http://127.0.0.1:8000/api/products/update/${id}/`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
+      body: formData,
     })
       .then(res => res.json())
       .then(() => {
-        alert("Updated successfully");
+        alert("Product updated successfully!");
         navigate("/manage-products");
       });
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Edit Product</h1>
+    <div style={container}>
+      <div style={card}>
+        <h1 style={{ marginBottom: "20px" }}>Edit Product</h1>
 
-      <input
-        value={product.name}
-        onChange={(e) => setProduct({ ...product, name: e.target.value })}
-        placeholder="Name"
-        style={input}
-      />
+        {/* IMAGE PREVIEW */}
+        {product.image && (
+          <img
+            src={product.image}
+            alt="product"
+            style={{ width: "150px", marginBottom: "15px" }}
+          />
+        )}
 
-      <input
-        value={product.category}
-        onChange={(e) => setProduct({ ...product, category: e.target.value })}
-        placeholder="Category"
-        style={input}
-      />
+        <label>Name</label>
+        <input
+          value={product.name}
+          onChange={(e) => setProduct({ ...product, name: e.target.value })}
+          style={input}
+        />
 
-      <input
-        value={product.price}
-        onChange={(e) => setProduct({ ...product, price: e.target.value })}
-        placeholder="Price"
-        style={input}
-      />
+        <label>Category</label>
+        <input
+          value={product.category}
+          onChange={(e) => setProduct({ ...product, category: e.target.value })}
+          style={input}
+        />
 
-      <input
-        value={product.stock}
-        onChange={(e) => setProduct({ ...product, stock: e.target.value })}
-        placeholder="Stock"
-        style={input}
-      />
+        <label>Price</label>
+        <input
+          value={product.price}
+          onChange={(e) => setProduct({ ...product, price: e.target.value })}
+          style={input}
+        />
 
-      <button onClick={handleUpdate} style={btn}>
-        Update Product
-      </button>
+        <label>Stock</label>
+        <input
+          value={product.stock}
+          onChange={(e) => setProduct({ ...product, stock: e.target.value })}
+          style={input}
+        />
+
+        <label>Change Image</label>
+        <input
+          type="file"
+          onChange={(e) => setNewImage(e.target.files[0])}
+          style={{ marginBottom: "15px" }}
+        />
+
+        <button onClick={handleUpdate} style={btn}>
+          Update Product
+        </button>
+      </div>
     </div>
   );
 }
 
+// 🎨 STYLES
+const container = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
+  background: "#f9f5e7",
+};
+
+const card = {
+  background: "white",
+  padding: "30px",
+  borderRadius: "10px",
+  width: "350px",
+  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+};
+
 const input = {
-  display: "block",
-  margin: "10px 0",
+  width: "100%",
   padding: "10px",
-  width: "300px",
+  marginBottom: "15px",
+  border: "1px solid #ccc",
+  borderRadius: "5px",
 };
 
 const btn = {
+  width: "100%",
+  padding: "12px",
   background: "green",
   color: "white",
-  padding: "10px",
   border: "none",
   borderRadius: "5px",
+  fontSize: "16px",
 };
 
 export default EditProduct;

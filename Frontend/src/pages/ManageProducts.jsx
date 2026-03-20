@@ -107,6 +107,7 @@ const editBtn = {
   border: "none",
   padding: "5px 10px",
   borderRadius: "5px",
+  cursor: "pointer",
 };
 
 const deleteBtn = {
@@ -115,6 +116,7 @@ const deleteBtn = {
   border: "none",
   padding: "5px 10px",
   borderRadius: "5px",
+  cursor: "pointer",
 };
 
 export default ManageProducts;

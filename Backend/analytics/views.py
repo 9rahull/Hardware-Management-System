@@ -32,18 +32,26 @@ def delete_product(request, pk):
     return Response({"message": "Deleted successfully"})
 
 
-# UPDATE PRODUCT
+# UPDATE PRODUCT 
 @api_view(['PUT'])
 def update_product(request, pk):
-    product = Product.objects.get(id=pk)
-    serializer = ProductSerializer(product, data=request.data, context={'request': request})
+    try:
+        product = Product.objects.get(id=pk)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found"}, status=404)
+
+    serializer = ProductSerializer(
+        product,
+        data=request.data,
+        partial=True,  
+        context={'request': request}
+    )
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
 
     return Response(serializer.errors)
-
 
 # DASHBOARD
 @api_view(['GET'])
