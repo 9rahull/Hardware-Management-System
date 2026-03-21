@@ -3,25 +3,33 @@ import { useNavigate } from "react-router-dom";
 
 function ManageProducts() {
   const [products, setProducts] = useState([]);
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+
   const navigate = useNavigate();
 
+  // ✅ FETCH FUNCTION (with pagination)
+  const fetchProducts = (url = "http://127.0.0.1:8000/api/products/") => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.results || []);
+        setNextPage(data.next);
+        setPrevPage(data.previous);
+      })
+      .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          setProducts(data.results || []);
-        }
-      });
+    fetchProducts();
   }, []);
 
+  // ✅ DELETE
   const handleDelete = (id) => {
     fetch(`http://127.0.0.1:8000/api/products/${id}/`, {
       method: "DELETE",
     }).then(() => {
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter((p) => p.id !== id));
     });
   };
 
@@ -29,7 +37,8 @@ function ManageProducts() {
     <div style={{ padding: "20px" }}>
       <h1 style={{ marginBottom: "20px" }}>Manage Products</h1>
 
-      <div style={tableContainer}>
+      {/* TABLE */}
+      <div style={container}>
         <table style={table}>
           <thead>
             <tr style={headerRow}>
@@ -80,17 +89,32 @@ function ManageProducts() {
           </tbody>
         </table>
       </div>
+
+      {/* 🔽 PAGINATION */}
+      <div style={pagination}>
+        {prevPage && (
+          <button onClick={() => fetchProducts(prevPage)} style={pageBtn}>
+            ⬅ Previous
+          </button>
+        )}
+
+        {nextPage && (
+          <button onClick={() => fetchProducts(nextPage)} style={pageBtn}>
+            Next ➡
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
-/* 🔥 STYLES */
+/* 🎨 STYLES */
 
-const tableContainer = {
+const container = {
   background: "white",
-  borderRadius: "10px",
-  padding: "15px",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+  borderRadius: "12px",
+  padding: "20px",
+  boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
 };
 
 const table = {
@@ -99,7 +123,7 @@ const table = {
 };
 
 const headerRow = {
-  background: "#f1f5f9",
+  background: "#e2e8f0",
   textAlign: "left"
 };
 
@@ -109,24 +133,24 @@ const row = {
 };
 
 const image = {
-  width: "80px",
-  height: "80px",
-  objectFit: "contain", // ✅ FIX IMAGE CUT
-  borderRadius: "5px"
+  width: "100px",
+  height: "100px",
+  objectFit: "cover", // ✅ FULL IMAGE FIX
+  borderRadius: "8px"
 };
 
 const actionBox = {
   display: "flex",
-  gap: "10px",
-  justifyContent: "center"
+  justifyContent: "center",
+  gap: "10px"
 };
 
 const editBtn = {
   background: "#2563eb",
   color: "white",
   border: "none",
-  padding: "6px 12px",
-  borderRadius: "5px",
+  padding: "6px 14px",
+  borderRadius: "6px",
   cursor: "pointer"
 };
 
@@ -134,8 +158,23 @@ const deleteBtn = {
   background: "#dc2626",
   color: "white",
   border: "none",
-  padding: "6px 12px",
-  borderRadius: "5px",
+  padding: "6px 14px",
+  borderRadius: "6px",
+  cursor: "pointer"
+};
+
+const pagination = {
+  marginTop: "20px",
+  textAlign: "center"
+};
+
+const pageBtn = {
+  margin: "10px",
+  padding: "10px 18px",
+  background: "#1e293b",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
   cursor: "pointer"
 };
 
