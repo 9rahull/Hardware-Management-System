@@ -5,118 +5,138 @@ function ManageProducts() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  const fetchProducts = () => {
+  useEffect(() => {
     fetch("http://127.0.0.1:8000/api/products/")
       .then(res => res.json())
-      .then(data => setProducts(data));
-  };
-
-  useEffect(() => {
-    fetchProducts();
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setProducts(data.results || []);
+        }
+      });
   }, []);
 
-  // ✅ DELETE
   const handleDelete = (id) => {
-    if (!window.confirm("Are you sure you want to delete?")) return;
-
-    fetch(`http://127.0.0.1:8000/api/products/delete/${id}/`, {
+    fetch(`http://127.0.0.1:8000/api/products/${id}/`, {
       method: "DELETE",
-    }).then(() => fetchProducts());
-  };
-
-  // ✅ EDIT NAVIGATION
-  const handleEdit = (id) => {
-    navigate(`/edit-product/${id}`);
+    }).then(() => {
+      setProducts(products.filter(p => p.id !== id));
+    });
   };
 
   return (
-    <div style={{ padding: "30px" }}>
+    <div style={{ padding: "20px" }}>
       <h1 style={{ marginBottom: "20px" }}>Manage Products</h1>
 
-      <table style={{
-        width: "100%",
-        borderCollapse: "collapse",
-        background: "white"
-      }}>
-        <thead>
-          <tr style={{ background: "#f1f5f9" }}>
-            <th style={th}>Image</th>
-            <th style={th}>Name</th>
-            <th style={th}>Category</th>
-            <th style={th}>Price</th>
-            <th style={th}>Stock</th>
-            <th style={th}>Edit</th>
-            <th style={th}>Delete</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {products.map((p) => (
-            <tr key={p.id} style={{ textAlign: "center" }}>
-              <td style={td}>
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  style={{ width: "60px", height: "60px", objectFit: "contain" }}
-                />
-              </td>
-
-              <td style={td}>{p.name}</td>
-              <td style={td}>{p.category}</td>
-              <td style={td}>Rs {p.price}</td>
-              <td style={td}>{p.stock}</td>
-
-              <td style={td}>
-                <button
-                  onClick={() => handleEdit(p.id)}
-                  style={editBtn}
-                >
-                  Edit
-                </button>
-              </td>
-
-              <td style={td}>
-                <button
-                  onClick={() => handleDelete(p.id)}
-                  style={deleteBtn}
-                >
-                  Delete
-                </button>
-              </td>
+      <div style={tableContainer}>
+        <table style={table}>
+          <thead>
+            <tr style={headerRow}>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {products.map((p) => (
+              <tr key={p.id} style={row}>
+                <td>
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    style={image}
+                  />
+                </td>
+
+                <td>{p.name}</td>
+                <td>{p.category}</td>
+                <td><b>Rs {p.price}</b></td>
+                <td>{p.stock}</td>
+
+                <td>
+                  <div style={actionBox}>
+                    <button
+                      onClick={() => navigate(`/edit-product/${p.id}`)}
+                      style={editBtn}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      style={deleteBtn}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
 
-const th = {
-  padding: "12px",
-  borderBottom: "1px solid #ddd",
+/* 🔥 STYLES */
+
+const tableContainer = {
+  background: "white",
+  borderRadius: "10px",
+  padding: "15px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
 };
 
-const td = {
-  padding: "12px",
+const table = {
+  width: "100%",
+  borderCollapse: "collapse"
+};
+
+const headerRow = {
+  background: "#f1f5f9",
+  textAlign: "left"
+};
+
+const row = {
   borderBottom: "1px solid #ddd",
+  textAlign: "center"
+};
+
+const image = {
+  width: "80px",
+  height: "80px",
+  objectFit: "contain", // ✅ FIX IMAGE CUT
+  borderRadius: "5px"
+};
+
+const actionBox = {
+  display: "flex",
+  gap: "10px",
+  justifyContent: "center"
 };
 
 const editBtn = {
-  background: "blue",
+  background: "#2563eb",
   color: "white",
   border: "none",
-  padding: "5px 10px",
+  padding: "6px 12px",
   borderRadius: "5px",
-  cursor: "pointer",
+  cursor: "pointer"
 };
 
 const deleteBtn = {
-  background: "red",
+  background: "#dc2626",
   color: "white",
   border: "none",
-  padding: "5px 10px",
+  padding: "6px 12px",
   borderRadius: "5px",
-  cursor: "pointer",
+  cursor: "pointer"
 };
 
 export default ManageProducts;

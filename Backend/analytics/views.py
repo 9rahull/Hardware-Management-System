@@ -1,18 +1,33 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from .models import Product
 from .serializers import ProductSerializer
 
 
-# GET ALL PRODUCTS
+# ✅ PAGINATION CLASS
+class CustomPagination(PageNumberPagination):
+    page_size = 6
+
+
+# ✅ GET PRODUCTS (WITH PAGINATION)
 @api_view(['GET'])
 def get_products(request):
-    products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True, context={'request': request})
-    return Response(serializer.data)
+    products = Product.objects.all().order_by('id')
+
+    paginator = CustomPagination()
+    result_page = paginator.paginate_queryset(products, request)
+
+    serializer = ProductSerializer(
+        result_page,
+        many=True,
+        context={'request': request}
+    )
+
+    return paginator.get_paginated_response(serializer.data)
 
 
-# ADD PRODUCT
+# ✅ ADD PRODUCT
 @api_view(['POST'])
 def add_product(request):
     serializer = ProductSerializer(data=request.data, context={'request': request})
@@ -24,26 +39,14 @@ def add_product(request):
     return Response(serializer.errors)
 
 
-# DELETE PRODUCT
-@api_view(['DELETE'])
-def delete_product(request, pk):
-    product = Product.objects.get(id=pk)
-    product.delete()
-    return Response({"message": "Deleted successfully"})
-
-
-# UPDATE PRODUCT 
+# ✅ UPDATE PRODUCT
 @api_view(['PUT'])
 def update_product(request, pk):
-    try:
-        product = Product.objects.get(id=pk)
-    except Product.DoesNotExist:
-        return Response({"error": "Product not found"}, status=404)
+    product = Product.objects.get(id=pk)
 
     serializer = ProductSerializer(
         product,
         data=request.data,
-        partial=True,  
         context={'request': request}
     )
 
@@ -53,7 +56,16 @@ def update_product(request, pk):
 
     return Response(serializer.errors)
 
-# DASHBOARD
+
+# ✅ DELETE PRODUCT
+@api_view(['DELETE'])
+def delete_product(request, pk):
+    product = Product.objects.get(id=pk)
+    product.delete()
+    return Response({"message": "Deleted successfully"})
+
+
+# ✅ DASHBOARD
 @api_view(['GET'])
 def dashboard_stats(request):
     products = Product.objects.all()

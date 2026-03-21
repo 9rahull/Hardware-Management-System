@@ -12,10 +12,11 @@ def login_view(request):
     if user:
         return Response({
             "success": True,
-            "username": user.username
+            "username": user.username,
+            "is_admin": user.is_superuser
         })
     else:
         return Response({
             "success": False,
-            "message": "Invalid username or password"
+            "message": "Invalid credentials"
         })
