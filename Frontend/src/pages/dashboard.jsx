@@ -116,8 +116,6 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setStats(data);
-        // get recent 5 from recent_products if backend sends it
-        // otherwise fetch from products API
         if (data.recent_products) {
           setRecentProducts(data.recent_products);
         } else {
@@ -125,7 +123,6 @@ function Dashboard() {
             .then((res) => res.json())
             .then((productData) => {
               const all = productData.results || productData;
-              // show last 5
               setRecentProducts(all.slice(0, 5));
             });
         }
@@ -153,41 +150,15 @@ function Dashboard() {
 
   return (
     <>
-      {/* NAVBAR */}
+      {/* ── NAVBAR: only brand + username + logout ── */}
       <nav className="w-full bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
+
+        {/* Brand */}
         <Link to="/" className="text-xl font-bold text-gray-900">
           Shrestha <span className="text-blue-600">Suppliers</span>
         </Link>
 
-        <div className="flex items-center gap-6">
-          <Link
-            to="/dashboard"
-            className="text-blue-600 font-semibold text-sm"
-          >
-            Dashboard
-          </Link>
-          {isAdmin === "true" && (
-            <Link
-              to="/add-product"
-              className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-            >
-              Add Product
-            </Link>
-          )}
-          <Link
-            to="/manage-products"
-            className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-          >
-            Manage Products
-          </Link>
-          <Link
-            to="/products"
-            className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-          >
-            View Products
-          </Link>
-        </div>
-
+        {/* Username + Logout only — no nav links here, sidebar handles navigation */}
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-600 font-medium">
             👤 {username} {isAdmin === "true" ? "(Admin)" : "(Staff)"}
@@ -199,6 +170,7 @@ function Dashboard() {
             Logout
           </button>
         </div>
+
       </nav>
 
       {/* PAGE */}
@@ -244,7 +216,6 @@ function Dashboard() {
         {/* RECENT PRODUCTS TABLE */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
 
-          {/* Table header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
             <h3 className="text-base font-semibold text-gray-900">
               Recent Products
@@ -257,7 +228,6 @@ function Dashboard() {
             </Link>
           </div>
 
-          {/* Table */}
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
@@ -291,7 +261,6 @@ function Dashboard() {
                     key={p.id}
                     className="border-b border-gray-100 hover:bg-gray-50 transition"
                   >
-                    {/* Image */}
                     <td className="px-5 py-3">
                       <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
                         {p.image ? (
@@ -305,13 +274,9 @@ function Dashboard() {
                         )}
                       </div>
                     </td>
-
-                    {/* Name */}
                     <td className="px-5 py-3 text-sm font-medium text-gray-900">
                       {p.name}
                     </td>
-
-                    {/* Category */}
                     <td className="px-5 py-3">
                       <span className={`text-xs font-medium px-2 py-1 rounded ${
                         p.category === "Kitchen Fittings"
@@ -321,13 +286,9 @@ function Dashboard() {
                         {p.category}
                       </span>
                     </td>
-
-                    {/* Price */}
                     <td className="px-5 py-3 text-sm text-gray-700">
                       Rs {Number(p.price).toLocaleString()}
                     </td>
-
-                    {/* Stock */}
                     <td className={`px-5 py-3 text-sm ${stockColor(p.stock)}`}>
                       {p.stock}
                     </td>
@@ -337,7 +298,6 @@ function Dashboard() {
             </tbody>
           </table>
 
-          {/* Footer note */}
           <div className="px-5 py-3 border-t border-gray-100 text-center text-xs text-gray-400">
             Showing 5 most recent products · Click "View All" to see all products
           </div>
