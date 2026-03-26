@@ -1,113 +1,17 @@
-// import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// function Dashboard() {
-//   const [stats, setStats] = useState({});
-//   const navigate = useNavigate();
-
-//   // 🔐 PROTECT ROUTE
-//   useEffect(() => {
-//     const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-//     if (!isLoggedIn) {
-//       navigate("/login");
-//     }
-//   }, []);
-
-//   // 📊 FETCH DATA
-//   useEffect(() => {
-//     fetch("http://127.0.0.1:8000/api/dashboard/")
-//       .then((res) => res.json())
-//       .then((data) => setStats(data));
-//   }, []);
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       {/* 🔐 LOGOUT BUTTON */}
-//       <button
-//         onClick={() => {
-//           localStorage.removeItem("isLoggedIn");
-//           localStorage.removeItem("username");
-//           window.location.href = "/login";
-    
-//         }}
-//         style={{
-//           background: "red",
-//           color: "white",
-//           padding: "8px 15px",
-//           border: "none",
-//           borderRadius: "5px",
-//           marginBottom: "20px",
-//           cursor: "pointer",
-//         }}
-//       >
-//         Logout
-//       </button>
-
-//       {/* 👤 USERNAME */}
-//       <h2>Welcome, {localStorage.getItem("username")}</h2>
-
-//       <h1>Dashboard</h1>
-
-//       <div
-//         style={{
-//           display: "grid",
-//           gridTemplateColumns: "repeat(4, 1fr)",
-//           gap: "20px",
-//           marginTop: "20px",
-//         }}
-//       >
-//         <div style={cardStyle}>
-//           <h2>{stats.total_products}</h2>
-//           <p>Total Products</p>
-//         </div>
-
-//         <div style={cardStyle}>
-//           <h2>{stats.total_stock}</h2>
-//           <p>Total Stock</p>
-//         </div>
-
-//         <div style={cardStyle}>
-//           <h2>{stats.low_stock}</h2>
-//           <p>Low Stock</p>
-//         </div>
-
-//         <div style={cardStyle}>
-//           <h2>Rs {stats.total_value}</h2>
-//           <p>Total Value</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// const cardStyle = {
-//   padding: "20px",
-//   background: "#f5f5f5",
-//   borderRadius: "10px",
-//   textAlign: "center",
-// };
-
-// export default Dashboard;
-
-
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [stats, setStats] = useState({});
   const [recentProducts, setRecentProducts] = useState([]);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const username = localStorage.getItem("username");
-  const isAdmin = localStorage.getItem("is_admin");
 
   // protect route
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
+    if (!isLoggedIn) navigate("/login");
   }, []);
 
   // fetch dashboard stats + recent products
@@ -116,8 +20,6 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setStats(data);
-        // get recent 5 from recent_products if backend sends it
-        // otherwise fetch from products API
         if (data.recent_products) {
           setRecentProducts(data.recent_products);
         } else {
@@ -125,7 +27,6 @@ function Dashboard() {
             .then((res) => res.json())
             .then((productData) => {
               const all = productData.results || productData;
-              // show last 5
               setRecentProducts(all.slice(0, 5));
             });
         }
@@ -136,14 +37,6 @@ function Dashboard() {
       });
   }, []);
 
-  // logout
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username");
-    localStorage.removeItem("is_admin");
-    navigate("/login");
-  };
-
   // stock color
   const stockColor = (stock) => {
     if (stock <= 10) return "text-red-600 font-semibold";
@@ -152,199 +45,138 @@ function Dashboard() {
   };
 
   return (
-    <>
-      {/* NAVBAR */}
-      <nav className="w-full bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold text-gray-900">
-          Shrestha <span className="text-blue-600">Suppliers</span>
-        </Link>
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      {/* Page title */}
+      <h1 className="text-xl font-bold text-gray-900 mb-1">Dashboard</h1>
+      <p className="text-sm text-gray-500 mb-8">Welcome back, {username}</p>
 
-        <div className="flex items-center gap-6">
-          <Link
-            to="/dashboard"
-            className="text-blue-600 font-semibold text-sm"
-          >
-            Dashboard
-          </Link>
-          {isAdmin === "true" && (
-            <Link
-              to="/add-product"
-              className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-            >
-              Add Product
-            </Link>
-          )}
-          <Link
-            to="/manage-products"
-            className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-          >
-            Manage Products
-          </Link>
-          <Link
-            to="/products"
-            className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
-          >
-            View Products
-          </Link>
+      {/* STAT CARDS */}
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
+          <div className="text-3xl font-bold text-gray-900 mb-1">
+            {stats.total_products ?? "-"}
+          </div>
+          <div className="text-sm text-gray-500">Total Products</div>
         </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600 font-medium">
-            👤 {username} {isAdmin === "true" ? "(Admin)" : "(Staff)"}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium px-4 py-2 rounded-lg transition"
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
+          <div className="text-3xl font-bold text-gray-900 mb-1">
+            {stats.total_stock ?? "-"}
+          </div>
+          <div className="text-sm text-gray-500">Total Stock</div>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
+          <div
+            className={`text-3xl font-bold mb-1 ${stats.low_stock > 0 ? "text-orange-500" : "text-gray-900"}`}
           >
-            Logout
+            {stats.low_stock ?? "-"}
+          </div>
+          <div className="text-sm text-gray-500">Low Stock</div>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
+          <div className="text-xl font-bold text-gray-900 mb-1">
+            Rs{" "}
+            {stats.total_value
+              ? Number(stats.total_value).toLocaleString()
+              : "-"}
+          </div>
+          <div className="text-sm text-gray-500">Total Value</div>
+        </div>
+      </div>
+
+      {/* RECENT PRODUCTS TABLE */}
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+          <h3 className="text-base font-semibold text-gray-900">
+            Recent Products
+          </h3>
+          <button
+            onClick={() => navigate("/manage-products")}
+            className="text-sm text-blue-600 font-medium hover:underline"
+          >
+            View All →
           </button>
         </div>
-      </nav>
 
-      {/* PAGE */}
-      <div className="max-w-5xl mx-auto px-6 py-8">
-
-        {/* Page title */}
-        <h1 className="text-xl font-bold text-gray-900 mb-1">Dashboard</h1>
-        <p className="text-sm text-gray-500 mb-8">Welcome back, {username}</p>
-
-        {/* STAT CARDS */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-
-          <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
-            <div className="text-3xl font-bold text-gray-900 mb-1">
-              {stats.total_products ?? "-"}
-            </div>
-            <div className="text-sm text-gray-500">Total Products</div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
-            <div className="text-3xl font-bold text-gray-900 mb-1">
-              {stats.total_stock ?? "-"}
-            </div>
-            <div className="text-sm text-gray-500">Total Stock</div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
-            <div className={`text-3xl font-bold mb-1 ${stats.low_stock > 0 ? "text-orange-500" : "text-gray-900"}`}>
-              {stats.low_stock ?? "-"}
-            </div>
-            <div className="text-sm text-gray-500">Low Stock</div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
-            <div className="text-xl font-bold text-gray-900 mb-1">
-              Rs {stats.total_value ? Number(stats.total_value).toLocaleString() : "-"}
-            </div>
-            <div className="text-sm text-gray-500">Total Value</div>
-          </div>
-
-        </div>
-
-        {/* RECENT PRODUCTS TABLE */}
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-
-          {/* Table header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
-            <h3 className="text-base font-semibold text-gray-900">
-              Recent Products
-            </h3>
-            <Link
-              to="/manage-products"
-              className="text-sm text-blue-600 font-medium hover:underline"
-            >
-              View All →
-            </Link>
-          </div>
-
-          {/* Table */}
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  Image
-                </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  Name
-                </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  Category
-                </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  Price
-                </th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  Stock
-                </th>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Image
+              </th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Name
+              </th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Category
+              </th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Price
+              </th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Stock
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentProducts.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="text-center py-8 text-gray-400 text-sm"
+                >
+                  No products found
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {recentProducts.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="text-center py-8 text-gray-400 text-sm">
-                    No products found
+            ) : (
+              recentProducts.map((p) => (
+                <tr
+                  key={p.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition"
+                >
+                  <td className="px-5 py-3">
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <span className="text-lg">🔧</span>
+                      )}
+                    </div>
                   </td>
-                </tr>
-              ) : (
-                recentProducts.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition"
-                  >
-                    {/* Image */}
-                    <td className="px-5 py-3">
-                      <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
-                        {p.image ? (
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-full h-full object-contain"
-                          />
-                        ) : (
-                          <span className="text-lg">🔧</span>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Name */}
-                    <td className="px-5 py-3 text-sm font-medium text-gray-900">
-                      {p.name}
-                    </td>
-
-                    {/* Category */}
-                    <td className="px-5 py-3">
-                      <span className={`text-xs font-medium px-2 py-1 rounded ${
+                  <td className="px-5 py-3 text-sm font-medium text-gray-900">
+                    {p.name}
+                  </td>
+                  <td className="px-5 py-3">
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded ${
                         p.category === "Kitchen Fittings"
                           ? "bg-blue-50 text-blue-600"
                           : "bg-purple-50 text-purple-600"
-                      }`}>
-                        {p.category}
-                      </span>
-                    </td>
+                      }`}
+                    >
+                      {p.category}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-sm text-gray-700">
+                    Rs {Number(p.price).toLocaleString()}
+                  </td>
+                  <td className={`px-5 py-3 text-sm ${stockColor(p.stock)}`}>
+                    {p.stock}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
 
-                    {/* Price */}
-                    <td className="px-5 py-3 text-sm text-gray-700">
-                      Rs {Number(p.price).toLocaleString()}
-                    </td>
-
-                    {/* Stock */}
-                    <td className={`px-5 py-3 text-sm ${stockColor(p.stock)}`}>
-                      {p.stock}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-
-          {/* Footer note */}
-          <div className="px-5 py-3 border-t border-gray-100 text-center text-xs text-gray-400">
-            Showing 5 most recent products · Click "View All" to see all products
-          </div>
-
+        <div className="px-5 py-3 border-t border-gray-100 text-center text-xs text-gray-400">
+          Showing 5 most recent products · Click "View All" to see all products
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

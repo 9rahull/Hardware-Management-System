@@ -17,13 +17,16 @@ function EditProduct() {
 
   // FETCH PRODUCT
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find(p => p.id === parseInt(id));
-        if (found) setProduct(found);
-      });
-  }, [id]);
+  fetch("http://127.0.0.1:8000/api/products/")
+    .then(res => res.json())
+    .then(data => {
+      const list = data.results || data; // ✅ FIX HERE
+
+      const found = list.find(p => p.id === parseInt(id));
+      if (found) setProduct(found);
+    })
+    .catch(err => console.error(err));
+}, [id]);
 
   // UPDATE
   const handleUpdate = () => {

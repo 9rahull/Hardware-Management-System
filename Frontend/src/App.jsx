@@ -8,6 +8,7 @@ import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ManageProducts from "./pages/ManageProducts";
 import StaffLayout from "./pages/StaffLayout";
+import PredictDemand from "./pages/PredictDemand";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/manage-products" element={<ManageProducts />} />
+          <Route path="/predict-demand" element={<PredictDemand />} />
+
 
         </Route>
 

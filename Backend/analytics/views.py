@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import Product
 from .serializers import ProductSerializer
+from .predict_demand import predict_demand
+from .models import Sale
 
 
 # ✅ PAGINATION CLASS
@@ -10,7 +12,7 @@ class CustomPagination(PageNumberPagination):
     page_size = 6
 
 
-# ✅ GET PRODUCTS (WITH PAGINATION)
+# ✅ GET PRODUCTS
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all().order_by('id')
@@ -80,4 +82,28 @@ def dashboard_stats(request):
         "total_stock": total_stock,
         "low_stock": low_stock,
         "total_value": total_value
+    })
+
+
+# ✅ AI DEMAND PREDICTION (FIXED)
+@api_view(['GET'])
+def predict_demand_view(request):
+    sales = Sale.objects.all().order_by('date')
+
+    sales_data = [s.quantity for s in sales]
+
+    if len(sales_data) < 3:
+        return Response({"error": "Not enough data"})
+
+    predictions = predict_demand(sales_data)
+
+    # ✅ Optional smart message
+    if max(predictions) > 20:
+        message = "⚠️ High demand expected — restock soon"
+    else:
+        message = "✅ Stock level is sufficient"
+
+    return Response({
+        "predictions": predictions,
+        "message": message
     })
