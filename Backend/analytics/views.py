@@ -107,3 +107,35 @@ def predict_demand_view(request):
         "predictions": predictions,
         "message": message
     })
+
+    # ✅ SMART RESTOCK FEATURE
+@api_view(['GET'])
+def restock_recommendation(request):
+    products = Product.objects.all()
+
+    recommendations = []
+
+    for product in products:
+        if product.stock <= 5:
+            status = "🚨 Urgent Restock"
+            priority = 1
+        elif product.stock <= 10:
+            status = "⚠️ Low Stock"
+            priority = 2
+        else:
+            status = "✅ Sufficient"
+            priority = 3
+
+        recommendations.append({
+            "name": product.name,
+            "stock": product.stock,
+            "status": status,
+            "priority": priority
+        })
+
+    # sort by priority
+    recommendations.sort(key=lambda x: x["priority"])
+
+    return Response({
+        "recommendations": recommendations
+    })
