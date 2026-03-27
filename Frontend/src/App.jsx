@@ -17,7 +17,6 @@ function App() {
 
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
         <Route path="/login" element={<Login />} />
 
         {/* STAFF PANEL WITH SIDEBAR */}
@@ -27,8 +26,8 @@ function App() {
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/manage-products" element={<ManageProducts />} />
+          <Route path="/products" element={<Products />} />   {/* ✅ MOVED HERE */}
           <Route path="/predict-demand" element={<PredictDemand />} />
-
 
         </Route>
 

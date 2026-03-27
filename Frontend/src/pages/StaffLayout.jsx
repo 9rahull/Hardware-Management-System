@@ -40,7 +40,7 @@ function StaffLayout() {
           <Link to="/add-product"     style={linkStyle}>Add Product</Link>
           <Link to="/manage-products" style={linkStyle}>Manage Products</Link>
           <Link to="/products"        style={linkStyle}>View Products</Link>
-          <Link to="/predict-demand"  style={linkStyle}>Predict Demand</Link>
+          <Link to="/predict-demand"  style={linkStyle}>Demand Analytics</Link>
         </div>
 
         {/* Logout at bottom */}
