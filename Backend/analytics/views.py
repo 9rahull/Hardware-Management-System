@@ -1,10 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from .models import Product
-from .serializers import ProductSerializer
+
+from .models import Product, Sale, Vendor   # ✅ FIXED
+from .serializers import ProductSerializer, VendorSerializer  # ✅ FIXED
+
 from .predict_demand import predict_demand
-from .models import Sale
 
 
 # ✅ PAGINATION CLASS
@@ -85,7 +86,7 @@ def dashboard_stats(request):
     })
 
 
-# ✅ AI DEMAND PREDICTION (FIXED)
+# ✅ AI DEMAND PREDICTION
 @api_view(['GET'])
 def predict_demand_view(request):
     sales = Sale.objects.all().order_by('date')
@@ -97,7 +98,6 @@ def predict_demand_view(request):
 
     predictions = predict_demand(sales_data)
 
-    # ✅ Optional smart message
     if max(predictions) > 20:
         message = "⚠️ High demand expected — restock soon"
     else:
@@ -108,7 +108,8 @@ def predict_demand_view(request):
         "message": message
     })
 
-    # ✅ SMART RESTOCK FEATURE
+
+# ✅ SMART RESTOCK
 @api_view(['GET'])
 def restock_recommendation(request):
     products = Product.objects.all()
@@ -133,9 +134,25 @@ def restock_recommendation(request):
             "priority": priority
         })
 
-    # sort by priority
     recommendations.sort(key=lambda x: x["priority"])
 
     return Response({
         "recommendations": recommendations
     })
+
+
+# ✅ VENDOR APIs
+@api_view(['GET'])
+def get_vendors(request):
+    vendors = Vendor.objects.all()
+    serializer = VendorSerializer(vendors, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def add_vendor(request):
+    serializer = VendorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)

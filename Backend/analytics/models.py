@@ -11,7 +11,7 @@ class Product(models.Model):
         return self.name
 
 
-# ✅ ADD THIS NEW MODEL
+# Sale model to track sales data
 class Sale(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
@@ -19,3 +19,14 @@ class Sale(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
+    
+
+class Vendor(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    address = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    
