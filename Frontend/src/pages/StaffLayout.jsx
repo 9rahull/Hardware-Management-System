@@ -14,20 +14,22 @@ function StaffLayout() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-
       {/* SIDEBAR */}
-      <div style={{
-        width: "220px",
-        background: "#1e293b",
-        color: "white",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-      }}>
-
+      <div
+        style={{
+          width: "220px",
+          background: "#1e293b",
+          color: "white",
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+        }}
+      >
         {/* Brand */}
-        <h2 style={{ marginBottom: "6px", fontSize: "15px", fontWeight: "700" }}>
+        <h2
+          style={{ marginBottom: "6px", fontSize: "15px", fontWeight: "700" }}
+        >
           Staff Panel
         </h2>
         <p style={{ fontSize: "12px", color: "#94a3b8", marginBottom: "24px" }}>
@@ -35,12 +37,32 @@ function StaffLayout() {
         </p>
 
         {/* Nav links */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-          <Link to="/dashboard"       style={linkStyle}>Dashboard</Link>
-          <Link to="/add-product"     style={linkStyle}>Add Product</Link>
-          <Link to="/manage-products" style={linkStyle}>Manage Products</Link>
-          <Link to="/products"        style={linkStyle}>View Products</Link>
-          <Link to="/predict-demand"  style={linkStyle}>Demand Analytics</Link>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            flex: 1,
+          }}
+        >
+          <Link to="/dashboard" style={linkStyle}>
+            Dashboard
+          </Link>
+          <Link to="/add-product" style={linkStyle}>
+            Add Product
+          </Link>
+          <Link to="/manage-products" style={linkStyle}>
+            Manage Products
+          </Link>
+          <Link to="/products" style={linkStyle}>
+            View Products
+          </Link>
+          <Link to="/predict-demand" style={linkStyle}>
+            Demand Analytics
+          </Link>
+          <Link to="/vendors" style={linkStyle}>
+            🏢 Vendors
+          </Link>
         </div>
 
         {/* Logout at bottom */}
@@ -61,14 +83,12 @@ function StaffLayout() {
         >
           Logout
         </button>
-
       </div>
 
       {/* MAIN CONTENT */}
       <div style={{ flex: 1, background: "#f9fafb", overflow: "auto" }}>
         <Outlet />
       </div>
-
     </div>
   );
 }

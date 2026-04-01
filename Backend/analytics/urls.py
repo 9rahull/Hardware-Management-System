@@ -6,16 +6,20 @@ from .views import (
     delete_product,
     dashboard_stats,
     predict_demand_view,
-    restock_recommendation   
+    restock_recommendation,
+    get_vendors,
+    add_vendor
 )
 
 urlpatterns = [
+    
     path('products/', get_products),
     path('products/add/', add_product),
     path('products/update/<int:pk>/', update_product),
-    path('products/delete/<int:pk>/', delete_product),
+    path('products/delete/<int:pk>/', delete_product), 
     path('dashboard/', dashboard_stats),
     path('predict-demand/', predict_demand_view),
     path('restock/', restock_recommendation),
-    
+    path('vendors/', get_vendors),
+    path('vendors/add/', add_vendor),
 ]

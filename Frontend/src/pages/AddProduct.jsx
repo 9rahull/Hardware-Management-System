@@ -81,7 +81,6 @@ function AddProduct() {
       <Navbar />
 
       <div className="max-w-xl mx-auto px-6 py-10">
-
         {/* Page title */}
         <h1 className="text-xl font-bold text-gray-900 mb-1">Add Product</h1>
         <p className="text-sm text-gray-400 mb-6">
@@ -100,7 +99,6 @@ function AddProduct() {
           onSubmit={handleSubmit}
           className="bg-white border border-gray-200 rounded-xl p-6"
         >
-
           {/* Product Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -242,7 +240,6 @@ function AddProduct() {
               Cancel
             </button>
           </div>
-
         </form>
       </div>
     </>
