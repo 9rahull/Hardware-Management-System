@@ -1,6 +1,24 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count  # ✅ ADD THIS AT TOP (if not already)
+
+# ✅ VENDORS WITH PRODUCT COUNT (NEW FEATURE)
+@api_view(['GET'])
+def vendors_with_count(request):
+    vendors = Vendor.objects.annotate(product_count=Count('product'))
+
+    data = []
+    for v in vendors:
+        data.append({
+            "id": v.id,
+            "name": v.name,
+            "phone": v.phone,
+            "address": v.address,
+            "product_count": v.product_count
+        })
+
+    return Response(data)
 
 from .models import Product, Sale, Vendor   # ✅ FIXED
 from .serializers import ProductSerializer, VendorSerializer  # ✅ FIXED
@@ -156,3 +174,19 @@ def add_vendor(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+@api_view(['GET'])
+def vendors_with_count(request):
+    vendors = Vendor.objects.annotate(product_count=Count('product'))
+
+    data = []
+    for v in vendors:
+        data.append({
+            "id": v.id,
+            "name": v.name,
+            "phone": v.phone,
+            "address": v.address,
+            "product_count": v.product_count
+        })
+
+    return Response(data)
