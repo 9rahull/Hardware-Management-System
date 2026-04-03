@@ -1,147 +1,165 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState({
-    name: "",
-    category: "",
-    price: "",
-    stock: "",
-    image: "",
-  });
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [image, setImage] = useState(null);
 
-  const [newImage, setNewImage] = useState(null);
+  const [vendor, setVendor] = useState("");
+  const [vendors, setVendors] = useState([]);
 
-  // FETCH PRODUCT
+  const [imageName, setImageName] = useState("");
+
+  // ✅ FETCH PRODUCT
   useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/products/")
-    .then(res => res.json())
-    .then(data => {
-      const list = data.results || data; // ✅ FIX HERE
+    fetch(`http://127.0.0.1:8000/api/products/`)
+      .then((res) => res.json())
+      .then((data) => {
+        const list = data.results || data;
+        const product = list.find((p) => p.id == id);
 
-      const found = list.find(p => p.id === parseInt(id));
-      if (found) setProduct(found);
-    })
-    .catch(err => console.error(err));
-}, [id]);
+        if (product) {
+          setName(product.name);
+          setCategory(product.category);
+          setPrice(product.price);
+          setStock(product.stock);
 
-  // UPDATE
-  const handleUpdate = () => {
+          // ✅ IMPORTANT FIX
+          setVendor(product.vendor ? String(product.vendor) : "");
+        }
+      });
+  }, [id]);
+
+  // ✅ FETCH VENDORS
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/vendors/")
+      .then((res) => res.json())
+      .then((data) => setVendors(data));
+  }, []);
+
+  // ✅ HANDLE SUBMIT
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const formData = new FormData();
+    formData.append("name", name);
+    formData.append("category", category);
+    formData.append("price", price);
+    formData.append("stock", stock);
 
-    formData.append("name", product.name);
-    formData.append("category", product.category);
-    formData.append("price", product.price);
-    formData.append("stock", product.stock);
-
-    if (newImage) {
-      formData.append("image", newImage);
+    // ✅ FIX: SEND NUMBER
+    if (vendor !== "") {
+      formData.append("vendor", Number(vendor));
     }
 
-    fetch(`http://127.0.0.1:8000/api/products/update/${id}/`, {
-      method: "PUT",
-      body: formData,
-    })
-      .then(res => res.json())
-      .then(() => {
-        alert("Product updated successfully!");
-        navigate("/manage-products");
-      });
+    if (image) formData.append("image", image);
+
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/products/update/${id}/`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
+
+    if (res.ok) {
+      alert("Product updated successfully!");
+      navigate("/manage-products");
+    } else {
+      alert("Update failed");
+    }
   };
 
   return (
-    <div style={container}>
-      <div style={card}>
-        <h1 style={{ marginBottom: "20px" }}>Edit Product</h1>
+    <div className="max-w-xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
 
-        {/* IMAGE PREVIEW */}
-        {product.image && (
-          <img
-            src={product.image}
-            alt="product"
-            style={{ width: "150px", marginBottom: "15px" }}
-          />
-        )}
+      <form onSubmit={handleSubmit} className="space-y-4">
 
-        <label>Name</label>
+        {/* NAME */}
         <input
-          value={product.name}
-          onChange={(e) => setProduct({ ...product, name: e.target.value })}
-          style={input}
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Product Name"
+          className="w-full border p-3 rounded"
         />
 
-        <label>Category</label>
+        {/* CATEGORY */}
         <input
-          value={product.category}
-          onChange={(e) => setProduct({ ...product, category: e.target.value })}
-          style={input}
+          type="text"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="Category"
+          className="w-full border p-3 rounded"
         />
 
-        <label>Price</label>
+        {/* PRICE */}
         <input
-          value={product.price}
-          onChange={(e) => setProduct({ ...product, price: e.target.value })}
-          style={input}
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="Price"
+          className="w-full border p-3 rounded"
         />
 
-        <label>Stock</label>
+        {/* STOCK */}
         <input
-          value={product.stock}
-          onChange={(e) => setProduct({ ...product, stock: e.target.value })}
-          style={input}
+          type="number"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          placeholder="Stock"
+          className="w-full border p-3 rounded"
         />
 
-        <label>Change Image</label>
-        <input
-          type="file"
-          onChange={(e) => setNewImage(e.target.files[0])}
-          style={{ marginBottom: "15px" }}
-        />
+        {/* ✅ VENDOR DROPDOWN */}
+        <select
+          value={vendor}
+          onChange={(e) => setVendor(e.target.value)}
+          className="w-full border p-3 rounded"
+        >
+          <option value="">Select Vendor</option>
+          {vendors.map((v) => (
+            <option key={v.id} value={v.id}>
+              {v.name}
+            </option>
+          ))}
+        </select>
 
-        <button onClick={handleUpdate} style={btn}>
+        {/* ✅ CUSTOM FILE INPUT */}
+        <div className="border-2 border-dashed p-4 rounded text-center">
+          <label className="cursor-pointer text-gray-600">
+            📷 Click to upload image
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+                setImageName(e.target.files[0]?.name);
+              }}
+            />
+          </label>
+
+          {imageName && (
+            <p className="text-sm text-green-600 mt-2">
+              Selected: {imageName}
+            </p>
+          )}
+        </div>
+
+        {/* BUTTON */}
+        <button className="bg-blue-600 text-white px-4 py-3 rounded w-full">
           Update Product
         </button>
-      </div>
+      </form>
     </div>
   );
 }
-
-// 🎨 STYLES
-const container = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "100vh",
-  background: "#f9f5e7",
-};
-
-const card = {
-  background: "white",
-  padding: "30px",
-  borderRadius: "10px",
-  width: "350px",
-  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-};
-
-const input = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "15px",
-  border: "1px solid #ccc",
-  borderRadius: "5px",
-};
-
-const btn = {
-  width: "100%",
-  padding: "12px",
-  background: "green",
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  fontSize: "16px",
-};
 
 export default EditProduct;
