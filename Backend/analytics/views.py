@@ -1,37 +1,19 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Count  # ✅ ADD THIS AT TOP (if not already)
+from django.db.models import Count
 
-# ✅ VENDORS WITH PRODUCT COUNT (NEW FEATURE)
-@api_view(['GET'])
-def vendors_with_count(request):
-    vendors = Vendor.objects.annotate(product_count=Count('product'))
-
-    data = []
-    for v in vendors:
-        data.append({
-            "id": v.id,
-            "name": v.name,
-            "phone": v.phone,
-            "address": v.address,
-            "product_count": v.product_count
-        })
-
-    return Response(data)
-
-from .models import Product, Sale, Vendor   # ✅ FIXED
-from .serializers import ProductSerializer, VendorSerializer  # ✅ FIXED
-
+from .models import Product, Sale, Vendor
+from .serializers import ProductSerializer, VendorSerializer
 from .predict_demand import predict_demand
 
 
-# ✅ PAGINATION CLASS
+# ✅ PAGINATION
 class CustomPagination(PageNumberPagination):
     page_size = 6
 
 
-# ✅ GET PRODUCTS
+# ✅ GET ALL PRODUCTS
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all().order_by('id')
@@ -46,6 +28,17 @@ def get_products(request):
     )
 
     return paginator.get_paginated_response(serializer.data)
+
+
+# ✅ GET SINGLE PRODUCT (🔥 IMPORTANT FIX)
+@api_view(['GET'])
+def get_single_product(request, pk):
+    try:
+        product = Product.objects.get(id=pk)
+        serializer = ProductSerializer(product, context={'request': request})
+        return Response(serializer.data)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found"}, status=404)
 
 
 # ✅ ADD PRODUCT
@@ -104,7 +97,7 @@ def dashboard_stats(request):
     })
 
 
-# ✅ AI DEMAND PREDICTION
+# ✅ AI DEMAND
 @api_view(['GET'])
 def predict_demand_view(request):
     sales = Sale.objects.all().order_by('date')
@@ -116,10 +109,7 @@ def predict_demand_view(request):
 
     predictions = predict_demand(sales_data)
 
-    if max(predictions) > 20:
-        message = "⚠️ High demand expected — restock soon"
-    else:
-        message = "✅ Stock level is sufficient"
+    message = "⚠️ High demand expected — restock soon" if max(predictions) > 20 else "✅ Stock level is sufficient"
 
     return Response({
         "predictions": predictions,
@@ -127,7 +117,7 @@ def predict_demand_view(request):
     })
 
 
-# ✅ SMART RESTOCK
+# ✅ RESTOCK
 @api_view(['GET'])
 def restock_recommendation(request):
     products = Product.objects.all()
@@ -154,12 +144,10 @@ def restock_recommendation(request):
 
     recommendations.sort(key=lambda x: x["priority"])
 
-    return Response({
-        "recommendations": recommendations
-    })
+    return Response({"recommendations": recommendations})
 
 
-# ✅ VENDOR APIs
+# ✅ GET VENDORS
 @api_view(['GET'])
 def get_vendors(request):
     vendors = Vendor.objects.all()
@@ -167,6 +155,7 @@ def get_vendors(request):
     return Response(serializer.data)
 
 
+# ✅ ADD VENDOR
 @api_view(['POST'])
 def add_vendor(request):
     serializer = VendorSerializer(data=request.data)
@@ -175,6 +164,8 @@ def add_vendor(request):
         return Response(serializer.data)
     return Response(serializer.errors)
 
+
+# ✅ VENDOR WITH COUNT
 @api_view(['GET'])
 def vendors_with_count(request):
     vendors = Vendor.objects.annotate(product_count=Count('product'))

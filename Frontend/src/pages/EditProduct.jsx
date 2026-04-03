@@ -16,23 +16,26 @@ function EditProduct() {
 
   const [imageName, setImageName] = useState("");
 
-  // ✅ FETCH PRODUCT
+  // ✅ FETCH SINGLE PRODUCT (🔥 FIXED)
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/products/`)
+    fetch(`http://127.0.0.1:8000/api/products/${id}/`)
       .then((res) => res.json())
-      .then((data) => {
-        const list = data.results || data;
-        const product = list.find((p) => p.id == id);
+      .then((product) => {
+        console.log("PRODUCT:", product);
 
-        if (product) {
-          setName(product.name);
-          setCategory(product.category);
-          setPrice(product.price);
-          setStock(product.stock);
-
-          // ✅ IMPORTANT FIX
-          setVendor(product.vendor ? String(product.vendor) : "");
+        if (!product || product.error) {
+          alert("Product not found");
+          return;
         }
+
+        setName(product.name || "");
+        setCategory(product.category || "");
+        setPrice(product.price || "");
+        setStock(product.stock || "");
+        setVendor(product.vendor ? String(product.vendor) : "");
+      })
+      .catch(() => {
+        alert("Failed to load product");
       });
   }, [id]);
 
@@ -43,7 +46,7 @@ function EditProduct() {
       .then((data) => setVendors(data));
   }, []);
 
-  // ✅ HANDLE SUBMIT
+  // ✅ UPDATE PRODUCT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -53,12 +56,13 @@ function EditProduct() {
     formData.append("price", price);
     formData.append("stock", stock);
 
-    // ✅ FIX: SEND NUMBER
     if (vendor !== "") {
       formData.append("vendor", Number(vendor));
     }
 
-    if (image) formData.append("image", image);
+    if (image) {
+      formData.append("image", image);
+    }
 
     const res = await fetch(
       `http://127.0.0.1:8000/api/products/update/${id}/`,
@@ -69,10 +73,10 @@ function EditProduct() {
     );
 
     if (res.ok) {
-      alert("Product updated successfully!");
+      alert("✅ Product updated successfully!");
       navigate("/manage-products");
     } else {
-      alert("Update failed");
+      alert("❌ Update failed");
     }
   };
 
@@ -132,8 +136,8 @@ function EditProduct() {
           ))}
         </select>
 
-        {/* ✅ CUSTOM FILE INPUT */}
-        <div className="border-2 border-dashed p-4 rounded text-center">
+        {/* ✅ IMAGE UPLOAD UI */}
+        <div className="border-2 border-dashed p-4 rounded text-center hover:bg-gray-50 transition">
           <label className="cursor-pointer text-gray-600">
             📷 Click to upload image
             <input
@@ -154,7 +158,7 @@ function EditProduct() {
         </div>
 
         {/* BUTTON */}
-        <button className="bg-blue-600 text-white px-4 py-3 rounded w-full">
+        <button className="bg-blue-600 text-white px-4 py-3 rounded w-full hover:bg-blue-700 transition">
           Update Product
         </button>
       </form>
