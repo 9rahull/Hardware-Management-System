@@ -10,6 +10,7 @@ import ManageProducts from "./pages/ManageProducts";
 import StaffLayout from "./pages/StaffLayout";
 import PredictDemand from "./pages/PredictDemand";
 import Vendors from "./pages/Vendors";
+import NewSale from "./pages/NewSale";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/predict-demand" element={<PredictDemand />} />
           <Route path="/vendors" element={<Vendors />} />
+          <Route path="/new-sale" element={<NewSale />} />
+
         </Route>
       </Routes>
     </BrowserRouter>

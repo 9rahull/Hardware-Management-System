@@ -63,6 +63,9 @@ function StaffLayout() {
           <Link to="/vendors" style={linkStyle}>
             🏢 Vendors
           </Link>
+          <Link to="/new-sale" style={linkStyle}>
+          New Sale
+          </Link>
         </div>
 
         {/* Logout at bottom */}

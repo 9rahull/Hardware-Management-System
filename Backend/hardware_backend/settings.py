@@ -20,10 +20,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
-    'corsheaders',  # ✅ ADD THIS
+    'corsheaders',  
 
     'analytics',
     'accounts',
+    'sales'
 ]
 
 # MIDDLEWARE
