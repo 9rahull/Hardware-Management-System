@@ -9,8 +9,11 @@ urlpatterns = [
     # ✅ PRODUCTS API
     path('api/', include('analytics.urls')),
 
-
+    # ✅ ACCOUNTS API
     path('api/accounts/', include('accounts.urls')),
+
+    # ✅ SALES API
+    path('api/sales/', include('sales.urls')),  # ✅ only this line added
 ]
 
 # ✅ MEDIA FILES
