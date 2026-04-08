@@ -3,10 +3,22 @@ import { Link } from "react-router-dom";
 function Navbar() {
   return (
     <nav className="w-full bg-white px-8 py-4 flex justify-between items-center border-b border-gray-200">
-
       {/* Brand */}
-      <Link to="/" className="text-xl font-bold text-gray-900">
-        Shrestha <span className="text-blue-600">Suppliers</span>
+      <Link
+        to="/"
+        className="flex items-center gap-2 text-xl font-bold text-gray-900"
+      >
+        {/* ✅ LOGO */}
+        <img
+          src="/images/logo.png"
+          alt="logo"
+          className="w-10 h-10 object-contain"
+        />
+
+        {/* ✅ TEXT */}
+        <span>
+          Shrestha <span className="text-blue-600">Suppliers</span>
+        </span>
       </Link>
 
       {/* Links */}
@@ -31,9 +43,7 @@ function Navbar() {
         >
           Staff Login
         </Link>
-
       </div>
-
     </nav>
   );
 }

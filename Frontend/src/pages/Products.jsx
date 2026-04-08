@@ -290,14 +290,14 @@ function Products() {
                   </p>
                 )}
 
-                {/* ✅ SHOW VENDOR ONLY FOR ADMIN */}
+                {/* Showing only Vendor  For Admin */}
                 {isAdmin === "true" && (
                   <p style={{ fontSize: "13px", color: "#555" }}>
                     Vendor: {p.vendor_name || "No Vendor"}
                   </p>
                 )}
 
-                {/* ✅ CUSTOMER VIEW */}
+                {/* CUSTOMER VIEW */}
                 {isAdmin !== "true" && (
                   <p style={{ color: "green", fontSize: "13px" }}>
                     Available

@@ -11,6 +11,7 @@ import StaffLayout from "./pages/StaffLayout";
 import PredictDemand from "./pages/PredictDemand";
 import Vendors from "./pages/Vendors";
 import NewSale from "./pages/NewSale";
+import SaleReceipt from "./pages/SaleReceipt";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
           <Route path="/predict-demand" element={<PredictDemand />} />
           <Route path="/vendors" element={<Vendors />} />
           <Route path="/new-sale" element={<NewSale />} />
-
+          <Route path="/sale-receipt/:id" element={<SaleReceipt />} />
         </Route>
       </Routes>
     </BrowserRouter>
