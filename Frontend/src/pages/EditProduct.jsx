@@ -388,7 +388,7 @@ function EditProduct() {
         setPrice(product.price || "");
         setStock(product.stock || "");
 
-        // ✅ FIX: Convert vendor to STRING so <select> matches correctly
+        // Convert vendor to STRING so <select> matches correctly
         setVendor(product.vendor !== null && product.vendor !== undefined ? String(product.vendor) : "");
       })
       .catch(() => {
@@ -483,7 +483,7 @@ function EditProduct() {
           className="w-full border p-3 rounded"
         />
 
-        {/* ✅ FIX: vendor stays as string, no conversion on change */}
+        {/* vendor stays as string, no conversion on change */}
         <select
           value={vendor}
           onChange={(e) => setVendor(e.target.value)}

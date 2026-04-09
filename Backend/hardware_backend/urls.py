@@ -6,14 +6,17 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # ✅ PRODUCTS API
+    # PRODUCTS API
     path('api/', include('analytics.urls')),
 
-    # ✅ ACCOUNTS API
+    #  ACCOUNTS API
     path('api/accounts/', include('accounts.urls')),
 
-    # ✅ SALES API
-    path('api/sales/', include('sales.urls')),  # ✅ only this line added
+    #  SALES API
+    path('api/sales/', include('sales.urls')),  
+
+    #  NOTIFICATIONS API
+    path('api/notifications/', include('notifications.urls')),
 ]
 
 # ✅ MEDIA FILES
