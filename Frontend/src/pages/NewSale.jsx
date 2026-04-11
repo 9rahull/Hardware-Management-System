@@ -1132,12 +1132,14 @@
 // export default NewSale;
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function NewSale() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/products/")
@@ -1211,6 +1213,7 @@ function NewSale() {
       }
 
       alert("Sale recorded successfully!");
+      navigate(`/sale-receipt/${data.id}`); // Redirect to receipt page
       setCart([]);
 
       fetch("http://127.0.0.1:8000/api/products/")
