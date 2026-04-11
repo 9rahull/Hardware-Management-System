@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.get_sales, name='get_sales'),
     path('<int:pk>/', views.get_single_sale, name='get_single_sale'),
     path('summary/', views.sales_summary, name='sales_summary'),
+    path('demand-forecast/', views.demand_forecast, name='demand_forecast'),
 ]
