@@ -829,12 +829,12 @@ function Home() {
             {
               icon: "🏪",
               title: "Who we are",
-              text: "Shrestha Suppliers is a local hardware store based in Sundar Marg, Pokhara. We supply quality bathroom and kitchen fittings to homes and businesses across the region.",
+              text: "Shrestha Suppliers is a local hardware store based in Sundar Marg, Pokhara. We supply quality bathroom and kitchen fittings and many mores to homes and businesses across the region.",
             },
             {
               icon: "📦",
               title: "What we sell",
-              text: "We stock sink mixers, basin sets, towel rods, soap dispensers, PVC pipes, showers, and other essential hardware items — all genuine, all fairly priced.",
+              text: "We stock different types of products like sink mixers, basin sets, towel rods, soap dispensers, PVC pipes, showers, and other essential hardware items — all genuine, all fairly priced.",
             },
             {
               icon: "💻",
