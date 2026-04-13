@@ -132,7 +132,6 @@
 
 // export default PredictDemand;
 
-
 // import { useEffect, useState } from "react";
 
 // function PredictDemand() {
@@ -544,9 +543,6 @@
 // };
 
 // export default PredictDemand;
-
-
-
 
 import { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
@@ -1057,3 +1053,4 @@ const s = {
 };
 
 export default PredictDemand;
+

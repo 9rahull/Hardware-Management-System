@@ -568,3 +568,175 @@ def demand_forecast(request):
     results.sort(key=lambda x: x['forecast'], reverse=True)
 
     return Response(results)
+
+
+
+
+
+# from rest_framework.decorators import api_view
+# from rest_framework.response import Response
+# from rest_framework import status
+# from django.db import transaction
+# from django.db.models import Sum
+# from django.utils import timezone
+# from .models import Sale, SaleItem
+# from .serializers import SaleSerializer
+# from analytics.models import Product
+# import calendar
+
+
+# # ✅ CREATE SALE — saves SaleItems + deducts stock
+# @api_view(['POST'])
+# def create_sale(request):
+#     print("📥 SALE DATA RECEIVED:", request.data)
+
+#     items_data = request.data.get('items', [])
+#     payment_method = request.data.get('payment_method', 'cash')
+#     customer_name = request.data.get('customer_name', '')
+
+#     if not items_data:
+#         return Response({"error": "No items provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     errors = []
+#     for item in items_data:
+#         try:
+#             product = Product.objects.get(id=item['product'])
+#             if product.stock < item['quantity']:
+#                 errors.append(f"{product.name}: only {product.stock} units in stock")
+#         except Product.DoesNotExist:
+#             errors.append(f"Product ID {item['product']} not found")
+
+#     if errors:
+#         return Response({"error": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+#     try:
+#         with transaction.atomic():
+#             total = 0
+#             product_objects = {}
+#             for item in items_data:
+#                 product = Product.objects.select_for_update().get(id=item['product'])
+#                 product_objects[item['product']] = product
+#                 total += product.price * item['quantity']
+
+#             sale = Sale.objects.create(
+#                 customer_name=customer_name,
+#                 payment_method=payment_method,
+#                 status='completed',
+#                 total_amount=total,
+#             )
+
+#             for item in items_data:
+#                 product = product_objects[item['product']]
+#                 SaleItem.objects.create(
+#                     sale=sale,
+#                     product=product,
+#                     quantity=item['quantity'],
+#                     price=product.price,
+#                 )
+#                 product.stock -= item['quantity']
+#                 product.save()
+
+#         print("✅ SALE SAVED:", sale.id)
+#         serializer = SaleSerializer(sale)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+#     except Exception as e:
+#         print("❌ SALE ERROR:", str(e))
+#         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# # ✅ GET ALL SALES
+# @api_view(['GET'])
+# def get_sales(request):
+#     sales = Sale.objects.all().order_by('-created_at')
+#     serializer = SaleSerializer(sales, many=True)
+#     return Response(serializer.data)
+
+
+# # ✅ GET SINGLE SALE
+# @api_view(['GET'])
+# def get_single_sale(request, pk):
+#     try:
+#         sale = Sale.objects.get(id=pk)
+#         serializer = SaleSerializer(sale)
+#         return Response(serializer.data)
+#     except Sale.DoesNotExist:
+#         return Response({"error": "Sale not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# # ✅ SALES SUMMARY
+# @api_view(['GET'])
+# def sales_summary(request):
+#     sales = Sale.objects.all()
+#     total_sales = sales.count()
+#     total_revenue = sum(s.total_amount for s in sales)
+#     cash_sales = sales.filter(payment_method='cash').count()
+#     khalti_sales = sales.filter(payment_method='khalti').count()
+
+#     return Response({
+#         "total_sales": total_sales,
+#         "total_revenue": total_revenue,
+#         "cash_sales": cash_sales,
+#         "khalti_sales": khalti_sales,
+#     })
+
+
+# def get_month_range(year, month):
+#     """Return (first_day, last_day) for a given year and month."""
+#     first_day = timezone.datetime(year, month, 1).date()
+#     last_day_num = calendar.monthrange(year, month)[1]
+#     last_day = timezone.datetime(year, month, last_day_num).date()
+#     return first_day, last_day
+
+
+# # ✅ DEMAND FORECAST (AI feature) — FIXED date logic
+# @api_view(['GET'])
+# def demand_forecast(request):
+#     today = timezone.now().date()
+#     results = []
+
+#     def get_month_start_end(months_ago):
+#         """Get first and last day of a month, X months ago."""
+#         month = today.month - months_ago
+#         year = today.year
+#         while month <= 0:
+#             month += 12
+#             year -= 1
+#         return get_month_range(year, month)
+
+#     products = Product.objects.all()
+#     for product in products:
+#         monthly = []
+
+#         for months_ago in range(1, 4):  # 1=last month, 2=two months ago, 3=three months ago
+#             first_day, last_day = get_month_start_end(months_ago)
+
+#             total = SaleItem.objects.filter(
+#                 product=product,
+#                 sale__created_at__date__gte=first_day,
+#                 sale__created_at__date__lte=last_day,
+#                 sale__status='completed',
+#             ).aggregate(total=Sum('quantity'))['total'] or 0
+
+#             monthly.append(total)
+
+#         # Remove this print after confirming it works
+#         print(f"📊 {product.name}: monthly={monthly}")
+
+#         # Weighted moving average: most recent = 50%, 2 months ago = 30%, 3 months ago = 20%
+#         weights = [0.5, 0.3, 0.2]
+#         forecast = round(sum(m * w for m, w in zip(monthly, weights)))
+#         last_month = monthly[0]
+#         change = round(((forecast - last_month) / last_month * 100) if last_month > 0 else 0)
+
+#         results.append({
+#             'product': product.name,
+#             'product_id': product.id,
+#             'last_month': last_month,
+#             'forecast': forecast,
+#             'change_percent': change,
+#             'current_stock': product.stock,
+#         })
+
+#     results.sort(key=lambda x: x['forecast'], reverse=True)
+#     return Response(results)
