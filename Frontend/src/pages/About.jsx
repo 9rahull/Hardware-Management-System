@@ -8,8 +8,8 @@ function About() {
 
       <p className="text-gray-600 mb-8">
         Shrestha Suppliers is a hardware store based in Pokhara, Nepal. We
-        provide high-quality bathroom and kitchen fittings. This system helps
-        manage products, vendors, and sales efficiently.
+        provide high quality bathroom fittings ,kitchen fittings and many more. So, this system helps
+        to manage products, vendors, and sales efficiently.
       </p>
 
       {/* MISSION */}
