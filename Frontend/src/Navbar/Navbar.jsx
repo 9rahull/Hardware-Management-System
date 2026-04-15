@@ -36,6 +36,12 @@ function Navbar() {
         >
           View Products
         </Link>
+        <Link
+          to="/about"
+          className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
+        >
+          About Us
+        </Link>
 
         <Link
           to="/login"

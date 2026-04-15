@@ -13,6 +13,7 @@ import Vendors from "./pages/Vendors";
 import NewSale from "./pages/NewSale";
 import SaleReceipt from "./pages/SaleReceipt";
 import Notifications from "./pages/Notifications";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/new-sale" element={<NewSale />} />
           <Route path="/sale-receipt/:id" element={<SaleReceipt />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/about" element={<About />} />
 
         </Route>
       </Routes>
