@@ -60,7 +60,6 @@ function Products() {
 
       {/* 🔍 SEARCH + FILTER */}
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        
         <input
           placeholder="Search products..."
           value={search}
@@ -92,11 +91,11 @@ function Products() {
                 <h3>{p.name}</h3>
                 <p style={{ color: "#666" }}>{p.category}</p>
 
-                {/* ✅ LOW STOCK */}
-                {p.stock < 10 && (
+                {/*  LOW STOCK */}
+                {isAdmin === "true" && p.stock < 10 && (
                   <p style={{ color: "red", fontWeight: "bold" }}>
                     Low Stock
-                  </p>
+                    </p>
                 )}
 
                 {/* Showing only Vendor  For Admin */}
@@ -108,9 +107,7 @@ function Products() {
 
                 {/* CUSTOMER VIEW */}
                 {isAdmin !== "true" && (
-                  <p style={{ color: "green", fontSize: "13px" }}>
-                    Available
-                  </p>
+                  <p style={{ color: "green", fontSize: "13px" }}>Available</p>
                 )}
 
                 <p style={{ fontWeight: "bold" }}>Rs {p.price}</p>
@@ -120,7 +117,6 @@ function Products() {
 
           {/* PAGINATION */}
           <div style={{ marginTop: "30px", textAlign: "center" }}>
-            
             {prevPage && (
               <button onClick={() => fetchProducts(prevPage)} style={btn}>
                 Prev
@@ -135,12 +131,12 @@ function Products() {
                   key={page}
                   onClick={() =>
                     fetchProducts(
-                      `http://127.0.0.1:8000/api/products/?page=${page}`
+                      `http://127.0.0.1:8000/api/products/?page=${page}`,
                     )
                   }
                   style={{
                     ...btn,
-                    background: currentPage === page ? "#2563eb" : "#333"
+                    background: currentPage === page ? "#2563eb" : "#333",
                   }}
                 >
                   {page}
@@ -160,7 +156,7 @@ function Products() {
   );
 }
 
-/* 🎨 STYLES */
+/*  STYLES */
 
 const grid = {
   display: "grid",
@@ -199,6 +195,13 @@ const btn = {
 };
 
 export default Products;
+
+
+
+
+
+
+
 
 
 
