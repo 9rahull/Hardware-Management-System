@@ -21,8 +21,6 @@ function EditProduct() {
     fetch(`http://127.0.0.1:8000/api/products/${id}/`)
       .then((res) => res.json())
       .then((product) => {
-        console.log("PRODUCT:", product);
-
         if (!product || product.error) {
           alert("Product not found");
           return;
@@ -33,7 +31,6 @@ function EditProduct() {
         setPrice(product.price || "");
         setStock(product.stock || "");
 
-        // Convert vendor to STRING so <select> matches correctly
         setVendor(
           product.vendor !== null && product.vendor !== undefined
             ? String(product.vendor)
@@ -56,13 +53,28 @@ function EditProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 🔥 VALIDATION
+    if (price === "" || stock === "") {
+      alert("Price and stock are required");
+      return;
+    }
+
+    if (Number(price) < 0) {
+      alert("❌ Price cannot be negative");
+      return;
+    }
+
+    if (Number(stock) < 0) {
+      alert("❌ Stock cannot be negative");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("category", category);
     formData.append("price", price);
     formData.append("stock", stock);
 
-    // ✅ FIX: Send vendor as Number to backend
     if (vendor !== "") {
       formData.append("vendor", Number(vendor));
     }
@@ -71,22 +83,26 @@ function EditProduct() {
       formData.append("image", image);
     }
 
-    const res = await fetch(
-      `http://127.0.0.1:8000/api/products/update/${id}/`,
-      {
-        method: "PATCH",
-        body: formData,
-      },
-    );
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/products/update/${id}/`,
+        {
+          method: "PATCH",
+          body: formData,
+        },
+      );
 
-    const data = await res.json();
-    console.log("UPDATE RESPONSE:", data);
+      const data = await res.json();
+      console.log("UPDATE RESPONSE:", data);
 
-    if (res.ok) {
-      alert("✅ Product updated successfully!");
-      navigate("/manage-products");
-    } else {
-      alert("❌ Update failed");
+      if (res.ok) {
+        alert("✅ Product updated successfully!");
+        navigate("/manage-products");
+      } else {
+        alert(data.error || "❌ Update failed");
+      }
+    } catch (err) {
+      alert("❌ Server error");
     }
   };
 
@@ -131,7 +147,7 @@ function EditProduct() {
           className="w-full border p-3 rounded"
         />
 
-        {/* vendor stays as string, no conversion on change */}
+        {/* VENDOR */}
         <select
           value={vendor}
           onChange={(e) => setVendor(e.target.value)}
