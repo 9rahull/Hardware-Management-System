@@ -208,3 +208,23 @@ def vendors_with_count(request):
         })
 
     return Response(data)
+
+@api_view(['PUT'])
+def update_vendor(request, pk):
+    try:
+        vendor = Vendor.objects.get(id=pk)
+        vendor.name    = request.data.get('name', vendor.name)
+        vendor.phone   = request.data.get('phone', vendor.phone)
+        vendor.address = request.data.get('address', vendor.address)
+        vendor.save()
+        return Response({'success': True})
+    except Vendor.DoesNotExist:
+        return Response({'error': 'Not found'}, status=404)
+
+@api_view(['DELETE'])
+def delete_vendor(request, pk):
+    try:
+        Vendor.objects.get(id=pk).delete()
+        return Response({'success': True})
+    except Vendor.DoesNotExist:
+        return Response({'error': 'Not found'}, status=404)
