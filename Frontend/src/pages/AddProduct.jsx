@@ -35,7 +35,7 @@ function AddProduct() {
       .catch(() => setCategories([]));
   }, []);
 
-  // ✅ FETCH VENDORS
+  //  FETCH VENDORS
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/vendors/")
       .then((res) => res.json())
@@ -43,9 +43,20 @@ function AddProduct() {
       .catch(() => setVendors([]));
   }, []);
 
-  // ✅ SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //  FORCE VALIDATION HERE
+    if (Number(price) < 0) {
+      setError("❌ Price cannot be negative");
+      return;
+    }
+
+    if (Number(stock) < 0) {
+      setError("❌ Stock cannot be negative");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -78,28 +89,15 @@ function AddProduct() {
       });
 
       const data = await res.json();
-      console.log("RESPONSE FULL:", data);
 
       if (res.ok) {
         alert("✅ Product added successfully!");
-
-        // reset
-        setName("");
-        setCategory("");
-        setNewCategory("");
-        setIsNewCategory(false);
-        setPrice("");
-        setStock("");
-        setVendor("");
-        setImage(null);
-        setImageName("");
-
         navigate("/manage-products");
       } else {
         setError(JSON.stringify(data));
       }
     } catch (err) {
-      setError("Server error. Please check backend.");
+      setError("Server error.");
     }
 
     setLoading(false);
