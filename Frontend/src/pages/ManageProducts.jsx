@@ -26,10 +26,14 @@ function ManageProducts() {
 
   // ✅ DELETE
   const handleDelete = (id) => {
-    fetch(`http://127.0.0.1:8000/api/products/${id}/`, {
+    fetch(`http://127.0.0.1:8000/api/products/delete/${id}/`, {
       method: "DELETE",
-    }).then(() => {
-      setProducts(products.filter((p) => p.id !== id));
+    }).then((res) => {
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+      } else {
+        alert("❌ Delete failed");
+      }
     });
   };
 

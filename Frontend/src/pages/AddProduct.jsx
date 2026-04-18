@@ -117,8 +117,10 @@ function AddProduct() {
           <p className="text-red-500 mb-4 bg-red-50 p-2 rounded">{error}</p>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white border rounded-xl p-6">
-
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white border rounded-xl p-6"
+        >
           {/* NAME */}
           <input
             type="text"
@@ -199,10 +201,26 @@ function AddProduct() {
               📷 Click to upload image
               <input
                 type="file"
+                accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  setImage(e.target.files[0]);
-                  setImageName(e.target.files[0]?.name);
+                  const file = e.target.files[0];
+
+                  //  NO FILE
+                  if (!file) return;
+
+                  //  BLOCK NON-IMAGE FILES
+                  if (!file.type.startsWith("image/")) {
+                    setError(" Only image files (jpg, png) are allowed");
+                    setImage(null);
+                    setImageName("");
+                    return;
+                  }
+
+                  //  VALID IMAGE
+                  setImage(file);
+                  setImageName(file.name);
+                  setError("");
                 }}
               />
             </label>
