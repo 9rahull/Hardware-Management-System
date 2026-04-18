@@ -214,7 +214,7 @@ def get_products(request):
     return paginator.get_paginated_response(serializer.data)
 
 
-# ✅ GET SINGLE PRODUCT
+#  GET SINGLE PRODUCT
 @api_view(['GET'])
 def get_single_product(request, pk):
     try:
@@ -222,7 +222,7 @@ def get_single_product(request, pk):
 
         serializer = ProductSerializer(
             product,
-            context={'request': request}   # ✅ IMPORTANT
+            context={'request': request}   
         )
 
         return Response(serializer.data)
@@ -251,7 +251,7 @@ def add_product(request):
 
 
 # ✅ UPDATE PRODUCT
-@api_view(['PUT'])
+@api_view(['PUT', 'PATCH'])
 def update_product(request, pk):
     try:
         product = Product.objects.get(id=pk)
