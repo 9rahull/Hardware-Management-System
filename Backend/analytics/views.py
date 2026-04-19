@@ -9,12 +9,12 @@ from .serializers import ProductSerializer, VendorSerializer
 from .predict_demand import predict_demand
 
 
-# ✅ PAGINATION
+#  PAGINATION
 class CustomPagination(PageNumberPagination):
-    page_size = 6
+    page_size = 8
 
 
-# ✅ GET ALL PRODUCTS
+#  GET ALL PRODUCTS
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all().order_by('id')

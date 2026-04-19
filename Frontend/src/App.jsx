@@ -19,24 +19,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* PUBLIC ROUTES */}
+        {/* ── PUBLIC ROUTES (no sidebar) ── */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-
-        {/* STAFF PANEL WITH SIDEBAR */}
+        <Route path="/products" element={<Products />} />{" "}
+        {/* customer-facing */}
+        <Route path="/about" element={<About />} /> {/*  public about page */}
+        {/* ── STAFF PANEL (with sidebar) ── */}
         <Route element={<StaffLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/manage-products" element={<ManageProducts />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/staff/products" element={<Products />} />{" "}
+          {/*  staff view of products */}
           <Route path="/predict-demand" element={<PredictDemand />} />
           <Route path="/vendors" element={<Vendors />} />
           <Route path="/new-sale" element={<NewSale />} />
           <Route path="/sale-receipt/:id" element={<SaleReceipt />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/about" element={<About />} />
-
         </Route>
       </Routes>
     </BrowserRouter>
