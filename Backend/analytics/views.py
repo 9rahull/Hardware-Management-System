@@ -31,7 +31,7 @@ def get_products(request):
     return paginator.get_paginated_response(serializer.data)
 
 
-# ✅ GET SINGLE PRODUCT
+#  GET SINGLE PRODUCT
 @api_view(['GET'])
 def get_single_product(request, pk):
     try:
@@ -48,7 +48,7 @@ def get_single_product(request, pk):
         return Response({"error": "Product not found"}, status=404)
 
 
-# ✅ ADD PRODUCT
+#  ADD PRODUCT
 @api_view(['POST'])
 def add_product(request):
     serializer = ProductSerializer(
@@ -80,12 +80,12 @@ def update_product(request, pk):
     product.price = request.data.get("price", product.price)
     product.stock = request.data.get("stock", product.stock)
 
-    # ✅ VENDOR UPDATE
+    #  VENDOR UPDATE
     vendor_id = request.data.get("vendor")
     if vendor_id:
         product.vendor_id = vendor_id
 
-    # ✅ IMAGE UPDATE
+    #  IMAGE UPDATE
     if request.FILES.get("image"):
         product.image = request.FILES.get("image")
 
@@ -94,7 +94,7 @@ def update_product(request, pk):
     return Response({"message": "Product updated successfully"})
 
 
-# ✅ DELETE PRODUCT
+#  DELETE PRODUCT
 @api_view(['DELETE'])
 def delete_product(request, pk):
     try:
@@ -105,7 +105,7 @@ def delete_product(request, pk):
         return Response({"error": "Product not found"}, status=404)
 
 
-# ✅ DASHBOARD
+#  DASHBOARD
 @api_view(['GET'])
 def dashboard_stats(request):
     products = Product.objects.all()
@@ -118,7 +118,7 @@ def dashboard_stats(request):
     })
 
 
-# ✅ AI DEMAND
+#  AI DEMAND
 @api_view(['GET'])
 def predict_demand_view(request):
     sales = Sale.objects.all().order_by('date')
@@ -142,7 +142,7 @@ def predict_demand_view(request):
     })
 
 
-# ✅ RESTOCK
+#  RESTOCK
 @api_view(['GET'])
 def restock_recommendation(request):
     products = Product.objects.all()
@@ -172,7 +172,7 @@ def restock_recommendation(request):
     return Response({"recommendations": recommendations})
 
 
-# ✅ GET VENDORS
+#  GET VENDORS
 @api_view(['GET'])
 def get_vendors(request):
     vendors = Vendor.objects.all()
@@ -180,7 +180,7 @@ def get_vendors(request):
     return Response(serializer.data)
 
 
-# ✅ ADD VENDOR
+#  ADD VENDOR
 @api_view(['POST'])
 def add_vendor(request):
     serializer = VendorSerializer(data=request.data)
@@ -192,7 +192,7 @@ def add_vendor(request):
     return Response(serializer.errors, status=400)
 
 
-# ✅ VENDORS WITH COUNT
+#  VENDORS WITH COUNT
 @api_view(['GET'])
 def vendors_with_count(request):
     vendors = Vendor.objects.annotate(product_count=Count('product'))

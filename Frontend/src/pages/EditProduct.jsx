@@ -16,7 +16,7 @@ function EditProduct() {
 
   const [imageName, setImageName] = useState("");
 
-  // ✅ FETCH PRODUCT
+  //  FETCH PRODUCT
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/products/${id}/`)
       .then((res) => res.json())
@@ -42,18 +42,18 @@ function EditProduct() {
       });
   }, [id]);
 
-  // ✅ FETCH VENDORS
+  //  FETCH VENDORS
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/vendors/")
       .then((res) => res.json())
       .then((data) => setVendors(data));
   }, []);
 
-  // ✅ UPDATE PRODUCT
+  //  UPDATE PRODUCT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔥 VALIDATION
+    //  VALIDATION
     if (price === "" || stock === "") {
       alert("Price and stock are required");
       return;
