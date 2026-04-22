@@ -31,7 +31,7 @@ urlpatterns = [
     # 🔹 VENDORS
     path('vendors/', get_vendors),
     path('vendors/add/', add_vendor),
-    path('vendors/<int:pk>/update/', update_vendor),   # ✅ fixed — removed api/ prefix
-    path('vendors/<int:pk>/delete/', delete_vendor),   # ✅ fixed — removed api/ prefix
+    path('vendors/<int:pk>/update/', update_vendor),   
+    path('vendors/<int:pk>/delete/', delete_vendor),  
     path('vendors/count/', vendors_with_count),
 ]

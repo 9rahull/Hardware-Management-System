@@ -6,7 +6,7 @@ function Dashboard() {
   const [stats, setStats] = useState({});
   const [recentProducts, setRecentProducts] = useState([]);
 
-  // 🔔 NOTIFICATION STATE
+  //  NOTIFICATION STATE
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -39,7 +39,7 @@ function Dashboard() {
       });
   }, []);
 
-  // 🔔 FETCH NOTIFICATIONS
+  //  FETCH NOTIFICATIONS
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/notifications/")
       .then((res) => res.json())
@@ -68,9 +68,9 @@ function Dashboard() {
             onClick={() => setOpen(!open)}
             className="cursor-pointer relative"
           >
-            <Bell size={22} />
+            <Bell size={20} />
 
-            {/* 🔴 BADGE */}
+            {/*  BADGE */}
             {notifications.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] px-1.5 py-[2px] rounded-full">
                 {notifications.length}

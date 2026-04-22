@@ -580,6 +580,6 @@ const s = {
     cursor: "pointer",
     fontFamily: "inherit",
   },
-};
+}
 
 export default Products;

@@ -24,12 +24,13 @@ INSTALLED_APPS = [
 
     'analytics',
     'accounts',
-    'sales'
+    'sales',
+    'payment',
 ]
 
 # MIDDLEWARE
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # ✅ MUST BE FIRST
+    'corsheaders.middleware.CorsMiddleware',  # MUST BE FIRST
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -77,5 +78,5 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# ✅ CORS FIX (VERY IMPORTANT)
+# CORS FIX (VERY IMPORTANT)
 CORS_ALLOW_ALL_ORIGINS = True

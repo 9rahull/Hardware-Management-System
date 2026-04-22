@@ -44,6 +44,13 @@ function Navbar() {
         </Link>
 
         <Link
+          to="/contact"
+          className="text-gray-500 hover:text-gray-900 text-sm font-medium transition"
+        >
+          Contact Us
+        </Link>
+
+        <Link
           to="/login"
           className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition"
         >

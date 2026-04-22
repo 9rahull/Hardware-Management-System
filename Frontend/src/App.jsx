@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Login from "./pages/Login";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/Dashboard";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ManageProducts from "./pages/ManageProducts";
@@ -14,6 +14,8 @@ import NewSale from "./pages/NewSale";
 import SaleReceipt from "./pages/SaleReceipt";
 import Notifications from "./pages/Notifications";
 import About from "./pages/About";
+import VendorPayment from "./pages/VendorPayment";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/products" element={<Products />} />{" "}
+        <Route path="/contact" element={<ContactUs />} />
         {/* customer-facing */}
         <Route path="/about" element={<About />} /> {/*  public about page */}
         {/* ── STAFF PANEL (with sidebar) ── */}
@@ -38,6 +41,7 @@ function App() {
           <Route path="/new-sale" element={<NewSale />} />
           <Route path="/sale-receipt/:id" element={<SaleReceipt />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/vendor-payment" element={<VendorPayment />} />
         </Route>
       </Routes>
     </BrowserRouter>

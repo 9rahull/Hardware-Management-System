@@ -61,10 +61,13 @@ function StaffLayout() {
             Demand Analytics
           </Link>
           <Link to="/vendors" style={linkStyle}>
-           Vendors
+            Vendors
           </Link>
           <Link to="/new-sale" style={linkStyle}>
-          Sales
+            Sales
+          </Link>
+          <Link to="/vendor-payment" style={linkStyle}>
+            Pay Vendors
           </Link>
         </div>
 
